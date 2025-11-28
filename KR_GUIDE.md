@@ -69,4 +69,13 @@ ffmpeg -i my_video.mp4 -c:v libvpx -f ivf -an assets/images/my_video.ivf
 go run ./cmd/player
 ```
 ### 배포하기 (Build)
+게임을 배포하려면 하나의 파일로 만들어야 합니다.
+
+```bash
+# 윈도우용 빌드 (.exe)
+cd cmd/player
+go build -o MyGame.exe -ldflags "-H=windowsgui"
+```
+> [!IMPORTANT]
+> 게임을 전달할 때 생성된 MyGame.exe 파일과 assets 폴더, story.json 파일을 함께 보내야 합니다.
 
