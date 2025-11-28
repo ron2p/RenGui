@@ -71,7 +71,8 @@ You can change the game's appearance in the [Config] tab.
 
 ---
 ## 🚀 5. Running and Deploying the Game
-Test Play.  
+
+### Test Play
 After saving in the editor, run the player to verify.  
 
 ```bash
