@@ -1,0 +1,45 @@
+{
+  "version": 0,
+  "title": "RenGui Project",
+  "variables": null,
+  "ui": {
+    "boxColor": "",
+    "boxOpacity": 0,
+    "fontSize": 0
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "dialogues": [
+        {
+          "type": "dialogue",
+          "actor": "세아",
+          "text": "안녕?",
+          "background": "",
+          "bgm": "",
+          "sfx": "",
+          "charLeft": "boy.PNG",
+          "charCenter": "",
+          "charRight": "girl.PNG",
+          "condition": "",
+          "choices": null,
+          "video": ""
+        },
+        {
+          "type": "dialogue",
+          "actor": "김강",
+          "text": "응...",
+          "background": "",
+          "bgm": "",
+          "sfx": "",
+          "charLeft": "",
+          "charCenter": "",
+          "charRight": "",
+          "condition": "",
+          "choices": null,
+          "video": ""
+        }
+      ]
+    }
+  ]
+}
