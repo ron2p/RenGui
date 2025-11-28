@@ -95,13 +95,13 @@ RenGui/
 ---
 
 ## 🗺️ Roadmap
-• [x] Core Engine: JSON Parser, Text Rendering, Branching Logic
-• [x] Media Support: VP8 Video(.ivf), MP3/WAV Audio, PNG/JPG Images
-• [x] Visual Editor: Drag & Drop Timeline, Branch creation, Modern UI
-• [x] Character System: Standing Tachie (Left/Center/Right)
-• [ ] Save/Load System: In-game state serialization
-• [ ] Title Screen & Menus: Configurable UI
-• [ ] Build Tools: One-click deployment for Windows/Mac/Linux/Web
+• [x] Core Engine: JSON Parser, Text Rendering, Branching Logic.  
+• [x] Media Support: VP8 Video(.ivf), MP3/WAV Audio, PNG/JPG Images.  
+• [x] Visual Editor: Drag & Drop Timeline, Branch creation, Modern UI.  
+• [x] Character System: Standing Tachie (Left/Center/Right).  
+• [ ] Save/Load System: In-game state serialization.  
+• [ ] Title Screen & Menus: Configurable UI.  
+• [ ] Build Tools: One-click deployment for Windows/Mac/Linux/Web.  
 
 ---
 
