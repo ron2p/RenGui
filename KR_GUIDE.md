@@ -53,6 +53,6 @@ FFmpeg를 사용하여 변환하는 법:
 ffmpeg -i my_video.mp4 -c:v libvpx -f ivf -an assets/images/my_video.ivf
 ```
 > [!TIP]
-> 변환된 .ivf 파일을 assets/images 폴더에 넣으면 에디터에서 자동으로 인식합니다.
+> 변환된 .ivf 파일을 assets/images 폴더에 넣으면 에디터에서 자동으로 인식합니다.   
 > 소리(-an)는 제거하고, BGM으로 따로 재생하는 것을 권장합니다
 
