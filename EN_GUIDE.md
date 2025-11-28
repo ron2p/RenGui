@@ -61,18 +61,30 @@ ffmpeg -i my_video.mp4 -c:v libvpx -f ivf -an assets/images/my_video.ivf
 > Place the converted .ivf file in the assets/images folder for automatic detection in the editor.
 > It is recommended to remove audio (-an) and play BGM separately.
 
+---
+
 ## 4. Game Customization (In Development)
 You can change the game's appearance in the [Config] tab.   
 • Resolution: Default is 1280 x 720. Can be changed to FHD (1920 x 1080).   
 • UI Design: Freely change the dialog box color, opacity, and text color.   
 • Changes are reflected in story.json only after clicking the [Save Project] button.   
 
+---
+## 🚀 5. Running and Deploying the Game
+Test Play.  
+After saving in the editor, run the player to verify.  
 
 ```bash
-
+go run ./cmd/player
 ```
 
+### Build (Deployment)
+To distribute the game, you need to compile it into a single file.   
+
 ```bash
+# Build for Windows (.exe)
+cd cmd/player
+go build -o MyGame.exe -ldflags "-H=windowsgui"
 ```
 
 [!IMPORTANT]
