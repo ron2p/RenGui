@@ -60,3 +60,23 @@
 ```bash
 git clone [https://github.com/ron2p/RenGui.git](https://github.com/YOUR_GITHUB_ID/RenGui.git)
 cd RenGui
+```
+
+### 2. Run the Editor
+```bash
+cd cmd/editor
+go mod tidy
+wails dev
+```
+
+### 3. Run the Player
+```bash
+# Open a new terminal from the project root
+go mod tidy
+go run ./cmd/player
+```
+
+---
+
+## 📂 Architecture
+RenGui follows a Monorepo structure to keep the Editor and Engine in sync.
