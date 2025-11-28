@@ -77,5 +77,5 @@ cd cmd/player
 go build -o MyGame.exe -ldflags "-H=windowsgui"
 ```
 > [!IMPORTANT]
-> 게임을 전달할 때 생성된 MyGame.exe 파일과 assets 폴더, story.json 파일을 함께 보내야 합니다.
+> 게임을 전달할 경우, 생성된 MyGame.exe 파일과 assets 폴더, story.json 파일을 함께 보내야 합니다.
 
