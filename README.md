@@ -81,7 +81,7 @@ go run ./cmd/player
 ## 📚 Documentation
 
 For a detailed user manual on how to use the Editor and manage assets, please read the **[User Guide](EN_GUIDE.md)**.   
-(에디터 사용법과 자산 관리 방법에 대한 자세한 내용은 **[사용자 가이드](KR_GUIDE.md)**를 참조하세요.).  
+(에디터 사용법과 자산 관리 방법에 대한 자세한 내용은 **[사용자 가이드](KR_GUIDE.md)** 를 참조하세요.).  
 
 
 ---
