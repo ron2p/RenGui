@@ -1,6 +1,6 @@
 # 📘 RenGui User Guide
 
-RenGui is a next-generation engine that allows you to create visual novels with simple clicks, requiring no coding.
+RenGui is a next-generation engine that allows you to create visual novels with simple clicks, requiring no coding.   
 This document explains how to create your own game using the RenGui Editor.
 
 ---
@@ -87,5 +87,5 @@ cd cmd/player
 go build -o MyGame.exe -ldflags "-H=windowsgui"
 ```
 
-[!IMPORTANT]
-When sharing the game, you must send the generated MyGame.exe file along with the assets folder and the story.json file.
+> [!IMPORTANT]
+> When sharing the game, you must send the generated MyGame.exe file along with the assets folder and the story.json file.
