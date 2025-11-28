@@ -116,8 +116,6 @@ Contributions are welcome! If you have ideas for features or find bugs, please o
 ---
 
 ## 📝 License
-Distributed under the MIT License. See LICENSE for more information.
-## 📝 License
 
 Distributed under the **MIT License**.
 
@@ -147,3 +145,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+</details>
+<div align="center">
+<sub>Built with ❤️ using Go, Ebitengine, and Wails.</sub>
+</div>
