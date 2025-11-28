@@ -58,5 +58,5 @@
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/YOUR_GITHUB_ID/RenGui.git](https://github.com/YOUR_GITHUB_ID/RenGui.git)
+git clone [https://github.com/ron2p/RenGui.git](https://github.com/YOUR_GITHUB_ID/RenGui.git)
 cd RenGui
