@@ -10,5 +10,5 @@ RenGui는 코딩 없이 클릭만으로 비주얼 노벨을 만들 수 있는 �
 • assets/sounds: 배경음악(.mp3, .wav)과 효과음을 넣으세요.   
 • assets/fonts: 게임에 사용할 폰트(font.ttf)를 넣으세요.   
 
-> **Warning**
+> [!WARNING]
 > 파일명은 가급적 영어로 작성해주세요. (예: bg_school.png, char_aris.png)
