@@ -6,10 +6,10 @@ RenGui는 코딩 없이 클릭만으로 비주얼 노벨을 만들 수 있는 �
 
 ## 🗂️ 1. 준비하기 (폴더 구조)
 게임을 만들기 전에, 사용할 이미지와 음악 파일들을 정해진 폴더에 넣어야 합니다.   
-• assets/images: 배경 이미지(.png, .jpg)와 동영상 배경(.ivf)을 넣으세요.   
-• assets/sprites: 캐릭터 스탠딩 이미지(.png)를 넣으세요 (배경이 투명해야 합니다).   
-• assets/sounds: 배경음악(.mp3, .wav)과 효과음을 넣으세요.   
-• assets/fonts: 게임에 사용할 폰트(font.ttf)를 넣으세요.   
+* assets/images: 배경 이미지(.png, .jpg)와 동영상 배경(.ivf)을 넣으세요.   
+* assets/sprites: 캐릭터 스탠딩 이미지(.png)를 넣으세요 (배경이 투명해야 합니다).   
+* assets/sounds: 배경음악(.mp3, .wav)과 효과음을 넣으세요.   
+* assets/fonts: 게임에 사용할 폰트(font.ttf)를 넣으세요.   
 
 > [!WARNING]
 > 파일명은 가급적 영어로 작성해주세요.   
