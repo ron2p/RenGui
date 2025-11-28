@@ -49,5 +49,10 @@ RenGui는 코딩 없이 클릭만으로 비주얼 노벨을 만들 수 있는 �
 RenGui는 가벼운 실행을 위해 VP8/IVF 포맷의 영상을 사용합니다.   
 mp4 파일을 바로 넣으면 작동하지 않습니다.   
 FFmpeg를 사용하여 변환하는 법:   
-
+```bash
+ffmpeg -i my_video.mp4 -c:v libvpx -f ivf -an assets/images/my_video.ivf
+```
+> [!TIP]
+> 변환된 .ivf 파일을 assets/images 폴더에 넣으면 에디터에서 자동으로 인식합니다.
+> 소리(-an)는 제거하고, BGM으로 따로 재생하는 것을 권장합니다
 
