@@ -1,4 +1,4 @@
-# 🌸 RenGui (Ren'Py + GUI)
+# 🌸 RenGui
 
 <div align="center">
 
