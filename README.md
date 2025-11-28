@@ -115,6 +115,11 @@ Contributions are welcome! If you have ideas for features or find bugs, please o
 
 ---
 
+## 👏 Credits
+
+* **Font:** [Pretendard](https://github.com/orioncactus/pretendard) by [Kil Hyung-jin (orioncactus)](https://github.com/orioncactus) (SIL Open Font License)
+
+---
 ## 📝 License
 
 Distributed under the **MIT License**.
@@ -145,6 +150,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+
 
 </details>
 <div align="center">
