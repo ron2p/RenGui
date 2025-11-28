@@ -65,9 +65,9 @@ ffmpeg -i my_video.mp4 -c:v libvpx -f ivf -an assets/images/my_video.ivf
 
 ## 4. Game Customization (In Development)
 You can change the game's appearance in the [Config] tab.   
-• Resolution: Default is 1280 x 720. Can be changed to FHD (1920 x 1080).   
-• UI Design: Freely change the dialog box color, opacity, and text color.   
-• Changes are reflected in story.json only after clicking the [Save Project] button.   
+* Resolution: Default is 1280 x 720. Can be changed to FHD (1920 x 1080).   
+* UI Design: Freely change the dialog box color, opacity, and text color.   
+* Changes are reflected in story.json only after clicking the [Save Project] button.   
 
 ---
 ## 🚀 5. Running and Deploying the Game
