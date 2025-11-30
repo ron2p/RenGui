@@ -13,22 +13,8 @@
       "dialogues": [
         {
           "type": "dialogue",
-          "actor": "세아",
-          "text": "안녕?",
-          "background": "",
-          "bgm": "",
-          "sfx": "",
-          "charLeft": "boy.PNG",
-          "charCenter": "",
-          "charRight": "girl.PNG",
-          "condition": "",
-          "choices": null,
-          "video": ""
-        },
-        {
-          "type": "dialogue",
-          "actor": "김강",
-          "text": "응...",
+          "actor": "My Character",
+          "text": "Test",
           "background": "",
           "bgm": "",
           "sfx": "",

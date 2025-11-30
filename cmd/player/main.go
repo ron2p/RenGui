@@ -29,22 +29,20 @@ import (
 	"golang.org/x/image/vp8"
 )
 
-// ... (VideoPlayer, AudioManager 구조체는 기존과 동일 - 생략) ...
-// (이전 코드의 NewVideoPlayer, Update, Close, NewAudioManager, PlayBGM 그대로 유지하세요)
-
-// =================================================================
-// 1. 비디오 플레이어 (기존 동일)
-// =================================================================
+// -------------------------------------------------------------------------
+// [비디오 플레이어] IVF/VP8 영상 재생 담당
+// -------------------------------------------------------------------------
 type VideoPlayer struct {
 	file       *os.File
 	decoder    *vp8.Decoder
 	currentImg *ebiten.Image
-	timeBase   time.Duration
+	timeBase   time.Duration // 프레임 간격 (FPS)
 	lastFrame  time.Time
 	isPlaying  bool
 }
 
 func NewVideoPlayer(filename string) (*VideoPlayer, error) {
+	// 파일 경로 탐색 (현재 폴더 -> 상위 폴더 순)
 	path := filepath.Join("assets", "images", filename)
 	f, err := os.Open(path)
 	if err != nil {
@@ -55,6 +53,7 @@ func NewVideoPlayer(filename string) (*VideoPlayer, error) {
 		}
 	}
 
+	// IVF 헤더(32byte) 파싱하여 FPS 계산
 	header := make([]byte, 32)
 	if _, err := io.ReadFull(f, header); err != nil {
 		return nil, err
@@ -83,16 +82,20 @@ func (v *VideoPlayer) Update() error {
 	if !v.isPlaying {
 		return nil
 	}
+	// 프레임 타이밍 체크
 	if time.Since(v.lastFrame) < v.timeBase {
 		return nil
 	}
 	v.lastFrame = time.Now()
 
+	// 1. 프레임 헤더 읽기
 	fh := make([]byte, 12)
 	if _, err := io.ReadFull(v.file, fh); err != nil {
-		v.isPlaying = false
+		v.isPlaying = false // 영상 끝
 		return nil
 	}
+
+	// 2. 프레임 데이터 읽고 디코딩
 	frameSize := binary.LittleEndian.Uint32(fh[:4])
 	frameData := make([]byte, frameSize)
 	if _, err := io.ReadFull(v.file, frameData); err != nil {
@@ -113,9 +116,9 @@ func (v *VideoPlayer) Close() {
 	}
 }
 
-// =================================================================
-// 2. 오디오 매니저 (기존 동일)
-// =================================================================
+// -------------------------------------------------------------------------
+// [오디오 매니저] BGM 루프 재생 및 SFX 처리
+// -------------------------------------------------------------------------
 type AudioManager struct {
 	ctx    *audio.Context
 	bgm    *audio.Player
@@ -130,6 +133,7 @@ func (am *AudioManager) PlayBGM(filename string) {
 		am.bgm.Close()
 	}
 
+	// 파일 로드
 	path := filepath.Join("assets", "sounds", filename)
 	f, err := os.Open(path)
 	if err != nil {
@@ -140,6 +144,7 @@ func (am *AudioManager) PlayBGM(filename string) {
 		}
 	}
 
+	// 무한 루프 스트림 생성
 	var s io.ReadSeeker
 	if strings.HasSuffix(filename, ".mp3") {
 		d, _ := mp3.Decode(am.ctx, f)
@@ -148,17 +153,18 @@ func (am *AudioManager) PlayBGM(filename string) {
 		d, _ := wav.Decode(am.ctx, f)
 		s = audio.NewInfiniteLoop(d, d.Length())
 	}
+
 	am.bgm, _ = am.ctx.NewPlayer(s)
 	am.bgm.Play()
 	am.curBGM = filename
 }
 
-// =================================================================
-// 3. 메인 게임 엔진 (캐릭터 그리기 추가됨)
-// =================================================================
+// -------------------------------------------------------------------------
+// [메인 게임 엔진]
+// -------------------------------------------------------------------------
 type Game struct {
 	Data     model.GameData
-	SceneMap map[string]int
+	SceneMap map[string]int // Scene ID -> Index 매핑
 	CurScene int
 	CurLine  int
 
@@ -167,31 +173,36 @@ type Game struct {
 	Video *VideoPlayer
 	BgImg *ebiten.Image
 
-	// 이미지 캐시 (배경용, 캐릭터용)
+	// 리소스 캐시
 	ImageCache  map[string]*ebiten.Image
 	SpriteCache map[string]*ebiten.Image
 }
 
 func NewGame() *Game {
-	// (폰트, JSON 로드 부분 기존과 동일 - 생략)
+	// 폰트 로드 (실패 시 기본값 처리 없음 주의)
 	fontPath := filepath.Join("assets", "fonts", "font.ttf")
 	fontDat, err := os.ReadFile(fontPath)
 	if err != nil {
 		fontDat, _ = os.ReadFile(filepath.Join("..", "..", "assets", "fonts", "font.ttf"))
 	}
+
 	var face font.Face
 	if len(fontDat) > 0 {
 		tt, _ := opentype.Parse(fontDat)
 		face, _ = opentype.NewFace(tt, &opentype.FaceOptions{Size: 24, DPI: 72, Hinting: font.HintingFull})
 	}
 
+	// 스토리 데이터 로드
 	jsonPath := "story.json"
 	jsonDat, err := os.ReadFile(jsonPath)
 	if err != nil {
 		jsonDat, _ = os.ReadFile(filepath.Join("..", "..", "story.json"))
 	}
+
 	var gData model.GameData
 	json.Unmarshal(jsonDat, &gData)
+
+	// 씬 ID 맵핑
 	sMap := make(map[string]int)
 	for i, s := range gData.Scenes {
 		sMap[s.ID] = i
@@ -201,7 +212,7 @@ func NewGame() *Game {
 		Data: gData, SceneMap: sMap, Font: face,
 		Audio:       &AudioManager{ctx: audio.NewContext(44100)},
 		ImageCache:  make(map[string]*ebiten.Image),
-		SpriteCache: make(map[string]*ebiten.Image), // 초기화
+		SpriteCache: make(map[string]*ebiten.Image),
 	}
 
 	if len(g.Data.Scenes) > 0 {
@@ -210,23 +221,26 @@ func NewGame() *Game {
 	return g
 }
 
-// LoadState, Update 함수는 기존과 동일하므로 생략합니다. (복붙해주세요)
-// ...
+// 현재 대사(CurLine)에 맞춰 배경, 조건, 리소스를 갱신합니다.
 func (g *Game) LoadState() {
 	if len(g.Data.Scenes) == 0 || g.CurScene >= len(g.Data.Scenes) {
 		return
 	}
 	scene := g.Data.Scenes[g.CurScene]
+
 	for {
 		if g.CurLine >= len(scene.Dialogues) {
 			return
 		}
 		diag := scene.Dialogues[g.CurLine]
+
+		// 조건(Condition) 체크: 불만족 시 스킵
 		if diag.Condition != "" {
 			parts := strings.Split(diag.Condition, " ")
 			if len(parts) == 3 {
 				key, op, valStr := parts[0], parts[1], parts[2]
 				var curVal float64
+
 				if val, ok := g.Data.Variables[key]; ok {
 					switch v := val.(type) {
 					case float64:
@@ -236,6 +250,7 @@ func (g *Game) LoadState() {
 					}
 				}
 				targetVal, _ := strconv.ParseFloat(valStr, 64)
+
 				pass := false
 				if op == ">=" {
 					pass = curVal >= targetVal
@@ -246,13 +261,17 @@ func (g *Game) LoadState() {
 				if op == "<" {
 					pass = curVal < targetVal
 				}
+
 				if !pass {
 					g.CurLine++
 					continue
 				}
 			}
 		}
+
+		// 리소스 로드
 		g.Audio.PlayBGM(diag.BGM)
+
 		if strings.HasSuffix(diag.Background, ".ivf") {
 			if g.Video == nil {
 				g.Video, _ = NewVideoPlayer(diag.Background)
@@ -269,10 +288,13 @@ func (g *Game) LoadState() {
 	}
 }
 
+// 게임 로직 업데이트
 func (g *Game) Update() error {
 	if g.Video != nil {
 		g.Video.Update()
 	}
+
+	// 안전장치: 데이터 없음
 	if len(g.Data.Scenes) == 0 || g.CurScene >= len(g.Data.Scenes) {
 		return nil
 	}
@@ -280,12 +302,16 @@ func (g *Game) Update() error {
 	if g.CurLine >= len(scene.Dialogues) {
 		return nil
 	}
+
 	diag := scene.Dialogues[g.CurLine]
+
+	// 1. 선택지 입력 처리
 	if len(diag.Choices) > 0 {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			mx, my := ebiten.CursorPosition()
 			for i, ch := range diag.Choices {
 				y := 300 + i*70
+				// 버튼 영역 충돌 체크
 				if mx > 340 && mx < 940 && my > y && my < y+60 {
 					if nextIdx, ok := g.SceneMap[ch.NextID]; ok {
 						g.CurScene = nextIdx
@@ -297,6 +323,8 @@ func (g *Game) Update() error {
 		}
 		return nil
 	}
+
+	// 2. 대사 넘기기
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		g.CurLine++
 		if g.CurLine < len(scene.Dialogues) {
@@ -306,14 +334,12 @@ func (g *Game) Update() error {
 	return nil
 }
 
-// ...
-
-// [신규] 배경 이미지 로더 (assets/images)
+// 배경 이미지 캐싱
 func (g *Game) loadImage(name string) *ebiten.Image {
 	if img, ok := g.ImageCache[name]; ok {
 		return img
 	}
-	// ... (경로 찾기 로직 기존 동일) ...
+	// (경로 탐색 로직)
 	path := filepath.Join("assets", "images", name)
 	f, err := os.Open(path)
 	if err != nil {
@@ -321,13 +347,14 @@ func (g *Game) loadImage(name string) *ebiten.Image {
 		f, _ = os.Open(path)
 	}
 	defer f.Close()
+
 	i, _, _ := image.Decode(f)
 	eImg := ebiten.NewImageFromImage(i)
 	g.ImageCache[name] = eImg
 	return eImg
 }
 
-// ★ [신규] 캐릭터 이미지 로더 (assets/sprites)
+// 스프라이트 캐싱
 func (g *Game) loadSprite(name string) *ebiten.Image {
 	if img, ok := g.SpriteCache[name]; ok {
 		return img
@@ -340,7 +367,7 @@ func (g *Game) loadSprite(name string) *ebiten.Image {
 		f, err = os.Open(path)
 		if err != nil {
 			return nil
-		} // 파일 없으면 nil 반환
+		}
 	}
 	defer f.Close()
 
@@ -353,7 +380,7 @@ func (g *Game) loadSprite(name string) *ebiten.Image {
 	return eImg
 }
 
-// ★ [신규] 캐릭터 그리기 헬퍼 함수
+// 캐릭터 그리기 (위치 계산 포함)
 func (g *Game) drawCharacter(screen *ebiten.Image, filename string, pos string) {
 	if filename == "" {
 		return
@@ -368,26 +395,25 @@ func (g *Game) drawCharacter(screen *ebiten.Image, filename string, pos string) 
 
 	op := &ebiten.DrawImageOptions{}
 
-	// 1. 크기 조정 (화면 높이의 80% 정도로 맞춤 - 조절 가능)
+	// 크기 조정 (화면 높이 80%)
 	scale := (screenH * 0.8) / float64(h)
 	op.GeoM.Scale(scale, scale)
 	scaledW := float64(w) * scale
 	scaledH := float64(h) * scale
 
-	// 2. 위치 계산
+	// X 좌표
 	var x float64
 	switch pos {
 	case "left":
-		x = screenW * 0.15 // 왼쪽 15% 지점
+		x = screenW * 0.15
 	case "center":
-		x = (screenW - scaledW) / 2 // 중앙
+		x = (screenW - scaledW) / 2
 	case "right":
-		x = screenW*0.85 - scaledW // 오른쪽 85% 지점 기준 정렬
+		x = screenW*0.85 - scaledW
 	}
 
-	// Y좌표: 바닥에서 대화창 높이(약 200px)만큼 띄움
+	// Y 좌표 (바닥 기준 정렬)
 	y := screenH - scaledH - 180
-
 	op.GeoM.Translate(x, y)
 	screen.DrawImage(img, op)
 }
@@ -400,7 +426,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		return
 	}
 
-	// [Layer 1] 배경 그리기
+	// [Layer 1] 배경 (비디오 우선)
 	if g.Video != nil && g.Video.currentImg != nil {
 		op := &ebiten.DrawImageOptions{}
 		w, h := g.Video.currentImg.Size()
@@ -425,15 +451,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	diag := scene.Dialogues[g.CurLine]
 
-	// ★ [Layer 2] 캐릭터 그리기 (배경 위, UI 아래)
-	// 순서대로 그립니다 (뒤에 있는게 앞으로 옴)
-	g.drawCharacter(screen, diag.CharCenter, "center") // 중앙을 먼저 그리고
-	g.drawCharacter(screen, diag.CharLeft, "left")     // 좌우를 그 위에 (취향차이)
+	// [Layer 2] 캐릭터 (중앙 -> 좌 -> 우 순서)
+	g.drawCharacter(screen, diag.CharCenter, "center")
+	g.drawCharacter(screen, diag.CharLeft, "left")
 	g.drawCharacter(screen, diag.CharRight, "right")
 
-	// [Layer 3] UI 및 텍스트 (기존 동일)
+	// [Layer 3] UI 및 텍스트
 	if len(diag.Choices) > 0 {
-		// ... (선택지 그리기)
 		for i, ch := range diag.Choices {
 			y := 300 + i*70
 			btn := ebiten.NewImage(600, 60)
@@ -446,7 +470,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			}
 		}
 	} else {
-		// ... (대화창 그리기)
 		box := ebiten.NewImage(1280, 200)
 		box.Fill(color.RGBA{0, 0, 0, 150})
 		op := &ebiten.DrawImageOptions{}
