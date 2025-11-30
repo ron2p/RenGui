@@ -43,6 +43,18 @@ let pendingDeleteTarget = null;
         const jsonStr = await LoadStory();
         if(jsonStr) {
             const data = JSON.parse(jsonStr);
+            // 설정값 불러오기 (없으면 기본값)
+            if(data.system) {
+                document.getElementById('conf-title').value = data.system.title || "My Game";
+                document.getElementById('conf-w').value = data.system.screenWidth || 1280;
+                document.getElementById('conf-h').value = data.system.screenHeight || 720;
+            }
+            if(data.ui) {
+                document.getElementById('conf-box-color').value = data.ui.boxColor || "#000000";
+                document.getElementById('conf-box-opacity').value = data.ui.boxOpacity || 0.7;
+                document.getElementById('conf-text-color').value = data.ui.textColor || "#FFFFFF";
+                document.getElementById('conf-box-height').value = data.ui.boxHeight || 200;
+            }
             if(data.scenes && data.scenes.length > 0) {
                 data.scenes[0].dialogues.forEach(d => {
                     let type = d.video ? 'video' : 'dialogue';
@@ -265,7 +277,19 @@ window.saveFile = function() {
     cards.forEach(c => dialogues.push(JSON.parse(c.dataset.json)));
 
     const gameData = {
-        title: "RenGui Project",
+        version: 1,
+        system: {
+            title: document.getElementById('conf-title').value,
+            screenWidth: parseInt(document.getElementById('conf-w').value),
+            screenHeight: parseInt(document.getElementById('conf-h').value),
+        },
+        ui: {
+            boxColor: document.getElementById('conf-box-color').value,
+            boxOpacity: parseFloat(document.getElementById('conf-box-opacity').value),
+            textColor: document.getElementById('conf-text-color').value,
+            boxHeight: parseInt(document.getElementById('conf-box-height').value),
+            fontSize: 24
+        },
         scenes: [{ id: "scene_01", dialogues: dialogues }]
     };
 
@@ -294,4 +318,20 @@ window.showToast = function(msg, type='info') {
 };
 
 // 탭 전환 (버튼용)
-window.switchTab = function(tab) { console.log(tab); };
+window.switchTab = function(tabName) {
+    const actionTab = document.getElementById('tab-action');
+    const configTab = document.getElementById('tab-config');
+    const btns = document.querySelectorAll('.tab-btn');
+
+    if(tabName === 'action') {
+        actionTab.style.display = 'block';
+        configTab.style.display = 'none';
+        btns[0].style.background = '#4285F4'; btns[0].style.color = 'white';
+        btns[1].style.background = '#2D2E35'; btns[1].style.color = '#aaa';
+    } else {
+        actionTab.style.display = 'none';
+        configTab.style.display = 'block';
+        btns[0].style.background = '#2D2E35'; btns[0].style.color = '#aaa';
+        btns[1].style.background = '#4285F4'; btns[1].style.color = 'white';
+    }
+};

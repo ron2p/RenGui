@@ -38,17 +38,25 @@ type Scene struct {
 	Dialogues []Dialogue `json:"dialogues"`
 }
 
+type SystemConfig struct {
+	Title        string `json:"title"`        // 게임 제목 (창 타이틀)
+	ScreenWidth  int    `json:"screenWidth"`  // 해상도 가로 (예: 1280)
+	ScreenHeight int    `json:"screenHeight"` // 해상도 세로 (예: 720)
+}
+
 // UIConfig: UI 커스터마이징 설정
 type UIConfig struct {
-	BoxColor   string  `json:"boxColor"`   // Hex Code
-	BoxOpacity float64 `json:"boxOpacity"` // 0.0 ~ 1.0
-	FontSize   int     `json:"fontSize"`
+	BoxColor   string  `json:"boxColor"`   // 대화창 색상 (Hex: #000000)
+	BoxOpacity float64 `json:"boxOpacity"` // 투명도 (0.0 ~ 1.0)
+	BoxHeight  int     `json:"boxHeight"`  // 대화창 높이
+	FontSize   int     `json:"fontSize"`   // 글자 크기
+	TextColor  string  `json:"textColor"`  // 글자 색상 (Hex: #FFFFFF)
 }
 
 // GameData: 최종 저장 파일 (story.json) 구조
 type GameData struct {
-	Version   int                    `json:"version"`   // 데이터 버전
-	Title     string                 `json:"title"`     // 게임 제목
+	Version   int                    `json:"version"` // 데이터 버전
+	System    SystemConfig           `json:"system"`
 	Variables map[string]interface{} `json:"variables"` // 전역 변수
 	UI        UIConfig               `json:"ui"`        // UI 설정
 	Scenes    []Scene                `json:"scenes"`    // 시나리오 데이터
