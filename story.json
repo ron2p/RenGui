@@ -1,11 +1,17 @@
 {
-  "version": 0,
-  "title": "RenGui Project",
-  "variables": null,
+  "version": 1,
+  "system": {
+    "title": "RenGui Default",
+    "screenWidth": 1280,
+    "screenHeight": 720
+  },
+  "variables": {},
   "ui": {
-    "boxColor": "",
-    "boxOpacity": 0,
-    "fontSize": 0
+    "boxColor": "#d41616",
+    "boxOpacity": 100,
+    "boxHeight": 200,
+    "fontSize": 24,
+    "textColor": "#ffffff"
   },
   "scenes": [
     {
@@ -15,6 +21,20 @@
           "type": "dialogue",
           "actor": "My Character",
           "text": "Test",
+          "background": "",
+          "bgm": "",
+          "sfx": "",
+          "charLeft": "",
+          "charCenter": "",
+          "charRight": "",
+          "condition": "",
+          "choices": null,
+          "video": ""
+        },
+        {
+          "type": "dialogue",
+          "actor": "뭐엇!",
+          "text": "내용을 입력하세요",
           "background": "",
           "bgm": "",
           "sfx": "",

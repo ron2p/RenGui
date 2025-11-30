@@ -272,28 +272,46 @@ window.closeConfirm = function(isYes) {
 };
 
 window.saveFile = function() {
+    // 1. 현재 타임라인에 있는 모든 카드 데이터 수집
     const cards = document.querySelectorAll('.script-card');
     let dialogues = [];
-    cards.forEach(c => dialogues.push(JSON.parse(c.dataset.json)));
+    
+    cards.forEach(c => {
+        dialogues.push(JSON.parse(c.dataset.json));
+    });
 
+    // 2. 설정 탭의 입력값들 가져오기 (DOM에서 직접 읽기)
+    const titleInput = document.getElementById('conf-title');
+    const widthInput = document.getElementById('conf-w');
+    const heightInput = document.getElementById('conf-h');
+    
+    const boxColorInput = document.getElementById('conf-box-color');
+    const boxOpacityInput = document.getElementById('conf-box-opacity');
+    const textColorInput = document.getElementById('conf-text-color');
+    const boxHeightInput = document.getElementById('conf-box-height');
+
+    // 3. 최종 저장 데이터 조립
     const gameData = {
         version: 1,
         system: {
-            title: document.getElementById('conf-title').value,
-            screenWidth: parseInt(document.getElementById('conf-w').value),
-            screenHeight: parseInt(document.getElementById('conf-h').value),
+            title: titleInput ? titleInput.value : "RenGui Game", 
+            screenWidth: widthInput ? parseInt(widthInput.value) : 1280,
+            screenHeight: heightInput ? parseInt(heightInput.value) : 720,
         },
         ui: {
-            boxColor: document.getElementById('conf-box-color').value,
-            boxOpacity: parseFloat(document.getElementById('conf-box-opacity').value),
-            textColor: document.getElementById('conf-text-color').value,
-            boxHeight: parseInt(document.getElementById('conf-box-height').value),
+            boxColor: boxColorInput ? boxColorInput.value : "#000000",
+            boxOpacity: boxOpacityInput ? parseFloat(boxOpacityInput.value) : 0.7,
+            textColor: textColorInput ? textColorInput.value : "#FFFFFF",
+            boxHeight: boxHeightInput ? parseInt(boxHeightInput.value) : 200,
             fontSize: 24
         },
+        variables: {}, 
         scenes: [{ id: "scene_01", dialogues: dialogues }]
     };
-
-    SaveStory(JSON.stringify(gameData)).then(res => showToast(res, "success"));
+    // 4. 백엔드로 전송
+    SaveStory(JSON.stringify(gameData)).then(res => {
+        showToast(res, "success");
+    });
 };
 
 window.showToast = function(msg, type='info') {
