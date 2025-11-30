@@ -1,6 +1,52 @@
 import {SaveStory, GetImageList, GetSoundList, GetSpriteList, LoadStory} from '../wailsjs/go/main/App';
 import Sortable from 'sortablejs';
+const translations = {
+    en: {
+        tab_action: "🎬 Action",
+        tab_config: "⚙️ Config",
+        menu_actions: "ACTIONS",
+        btn_dialogue: "Add Dialogue",
+        btn_video: "Add Video",
+        btn_branch: "Add Branch",
+        menu_editor: "EDITOR PREFERENCES",
+        lbl_language: "Language",
+        lbl_theme: "Theme",
+        btn_save: "Save Project",
+        lbl_title: "Game Title",
+        // 모달창 텍스트
+        modal_edit_dialogue: "✏️ Edit Dialogue",
+        modal_edit_video: "🎬 Edit Video",
+        msg_load_success: "Project Loaded Successfully ✨",
+        msg_save_success: "Project Saved Successfully 💾",
+        msg_delete_confirm: "Are you sure you want to delete this?",
+        msg_deleted: "Item Deleted.",
+        ph_actor: "Character Name",
+        ph_text: "Enter dialogue here...",
+    },
+    ko: {
+        tab_action: "🎬 제작",
+        tab_config: "⚙️ 설정",
+        menu_actions: "액션 추가",
+        btn_dialogue: "대사 추가",
+        btn_video: "영상 연출",
+        btn_branch: "분기점 생성",
+        menu_editor: "에디터 환경설정",
+        lbl_language: "언어 (Language)",
+        lbl_theme: "테마 (Theme)",
+        btn_save: "프로젝트 저장",
+        lbl_title: "게임 제목",
+        modal_edit_dialogue: "✏️ 대사 편집",
+        modal_edit_video: "🎬 영상 설정",
+        msg_load_success: "프로젝트를 불러왔습니다 ✨",
+        msg_save_success: "저장되었습니다 💾",
+        msg_delete_confirm: "정말 삭제하시겠습니까?",
+        msg_deleted: "삭제되었습니다.",
+        ph_actor: "캐릭터 이름",
+        ph_text: "대사를 입력하세요...",
+    }
+};
 
+let currentLang = 'en'; // 기본값 영어
 const listElement = document.getElementById('list');
 const editModal = document.getElementById('edit-modal');
 const confirmModal = document.getElementById('confirm-modal');
@@ -12,6 +58,15 @@ let pendingDeleteTarget = null;
 // 0. 초기화 및 이벤트 리스너 (여기가 핵심!)
 // =========================================================
 (async function init() {
+    const savedTheme = localStorage.getItem('rengui_theme');
+    if(savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('theme-label').innerText = "☀️ Light Mode";
+    }
+
+    const savedLang = localStorage.getItem('rengui_lang') || 'en'; // 없으면 영어
+    document.getElementById('app-lang').value = savedLang;
+    changeLanguage(savedLang); // 언어 적용
     // 1. 드래그 앤 드롭 설정
     new Sortable(listElement, {
         animation: 150,
@@ -137,7 +192,9 @@ async function openEdit(btn) {
     const type = data.type || (data.video ? 'video' : 'dialogue');
 
     // UI 세팅
-    document.getElementById('modal-title').innerText = type === 'video' ? '🎬 영상 설정' : '✏️ 대사 편집';
+    document.getElementById('modal-title').innerText = type === 'video' 
+    ? translations[currentLang]['modal_edit_video'] 
+    : translations[currentLang]['modal_edit_dialogue'];
     const uiDialogue = document.getElementById('field-dialogue');
     const uiVideo = document.getElementById('field-video');
 
@@ -248,7 +305,7 @@ window.confirmEdit = function() {
     `;
 
     closeModal();
-    showToast("수정되었습니다", "success");
+    showToast(translations[currentLang]['msg_save_success'], "success");
 };
 
 // =========================================================
@@ -351,5 +408,40 @@ window.switchTab = function(tabName) {
         configTab.style.display = 'block';
         btns[0].style.background = '#2D2E35'; btns[0].style.color = '#aaa';
         btns[1].style.background = '#4285F4'; btns[1].style.color = 'white';
+    }
+};
+
+window.changeLanguage = function(lang) {
+    currentLang = lang;
+    localStorage.setItem('rengui_lang', lang);
+
+    // 1. data-i18n 태그가 있는 모든 요소 텍스트 변경
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if(translations[lang][key]) {
+            el.innerText = translations[lang][key];
+        }
+    });
+
+    // 2. Placeholder 등 속성 변경 (필요시)
+    const actorIn = document.getElementById('edit-actor');
+    const textIn = document.getElementById('edit-text');
+    if(actorIn) actorIn.placeholder = translations[lang]['ph_actor'];
+    if(textIn) textIn.placeholder = translations[lang]['ph_text'];
+};
+
+// 테마 변경 (토글)
+window.toggleTheme = function() {
+    const body = document.body;
+    const label = document.getElementById('theme-label');
+    
+    if(body.classList.contains('light-mode')) {
+        body.classList.remove('light-mode');
+        label.innerText = "🌙 Dark Mode";
+        localStorage.setItem('rengui_theme', 'dark');
+    } else {
+        body.classList.add('light-mode');
+        label.innerText = "☀️ Light Mode";
+        localStorage.setItem('rengui_theme', 'light');
     }
 };

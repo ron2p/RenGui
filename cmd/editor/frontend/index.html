@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>RenGui Studio</title>
@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
         :root {
-            /* Gemini Theme Colors */
+            /* [Default: Dark Mode] */
             --bg-color: #131314;
             --sidebar-bg: #1E1F20;
             --card-bg: #2D2E35;
@@ -19,12 +19,22 @@
             --text-secondary: #A8C7FA; /* Gemini Blue Text */
             --text-muted: #8E918F;
 
-            --accent-gradient: linear-gradient(135deg, #4285F4, #9B72CB); /* Gemini Gradient */
-            --accent-hover: linear-gradient(135deg, #5c97f7, #af82f5);
-            
+            --accent-gradient: linear-gradient(135deg, #4285F4, #9B72CB);
             --radius-L: 24px;
             --radius-M: 16px;
             --radius-S: 8px;
+        }
+
+        /* [Light Mode Overrides] body.light-mode 적용 시 */
+        body.light-mode {
+            --bg-color: #F0F2F5;
+            --sidebar-bg: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --input-bg: #F1F3F4;
+            --border-color: #E0E0E0;
+            --text-primary: #202124;
+            --text-secondary: #1967D2; /* 진한 파랑 */
+            --text-muted: #5F6368;
         }
 
         body {
@@ -35,6 +45,7 @@
             height: 100vh;
             display: flex;
             overflow: hidden;
+            transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 */
         }
 
         /* --- 사이드바 --- */
@@ -45,8 +56,9 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--border-color);
-            box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
             z-index: 10;
+            transition: background-color 0.3s;
         }
 
         .brand {
@@ -60,42 +72,65 @@
         }
 
         .menu-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* 탭 버튼 스타일 */
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px;
+            border-radius: var(--radius-S);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .tab-btn:hover { background: rgba(128,128,128,0.1); }
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
         }
 
         /* 액션 버튼들 */
         .btn-action {
+            width: 100%;
             background: var(--card-bg);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
-            padding: 16px;
+            padding: 14px;
             border-radius: var(--radius-M);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             cursor: pointer;
             text-align: left;
-            display: flex; align-items: center; gap: 15px;
+            display: flex; align-items: center; gap: 12px;
             transition: all 0.2s ease;
             font-weight: 500;
+            font-size: 0.95rem;
         }
-        .btn-action i { font-size: 1.2rem; color: #A8C7FA; }
+        .btn-action i { font-size: 1.1rem; color: var(--text-secondary); }
         .btn-action:hover {
-            background: #383940;
             transform: translateY(-2px);
-            border-color: #A8C7FA;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-color: var(--text-secondary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* 저장 버튼 (그라디언트) */
+        /* 저장 버튼 */
         .btn-save {
             background: var(--accent-gradient);
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 50px; /* 캡슐형 */
+            padding: 14px;
+            border-radius: 50px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
@@ -106,12 +141,12 @@
         }
         .btn-save:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        /* --- 메인 영역 (타임라인) --- */
+        /* --- 메인 영역 --- */
         .main {
             flex: 1;
             padding: 40px;
             overflow-y: auto;
-            background-image: radial-gradient(circle at 10% 10%, rgba(66, 133, 244, 0.05) 0%, transparent 20%);
+            background-image: radial-gradient(circle at 10% 10%, rgba(66, 133, 244, 0.03) 0%, transparent 20%);
         }
 
         .header-info {
@@ -119,6 +154,7 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             display: flex; align-items: center; gap: 8px;
+            font-weight: 500;
         }
 
         #list {
@@ -136,26 +172,19 @@
             display: flex; align-items: flex-start; gap: 20px;
             position: relative;
             transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .script-card:hover {
-            border-color: #555;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            border-color: var(--text-muted);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
         }
         
-        /* 영상 카드 스타일 */
-        .script-card.type-video {
-            background: #1F2029; /* 약간 더 어둡게 */
-            border-left: 4px solid #E37400; /* 오렌지색 포인트 */
-        }
-        /* 분기 카드 스타일 */
-        .script-card.type-branch {
-            background: #231F29; 
-            border-left: 4px solid #9B72CB; /* 보라색 포인트 */
-        }
+        .script-card.type-video { border-left: 4px solid #E37400; }
+        .script-card.type-branch { border-left: 4px solid #9B72CB; }
 
         .card-icon {
             width: 40px; height: 40px;
-            background: #3C4043;
+            background: var(--input-bg);
             border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
             color: var(--text-secondary);
@@ -165,7 +194,7 @@
         
         .actor-badge {
             display: inline-block;
-            background: rgba(168, 199, 250, 0.1);
+            background: rgba(168, 199, 250, 0.15);
             color: var(--text-secondary);
             padding: 4px 10px;
             border-radius: 12px;
@@ -174,25 +203,12 @@
             margin-bottom: 8px;
         }
         
-        .dialogue-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-primary);
-        }
+        .dialogue-text { font-size: 1rem; line-height: 1.6; color: var(--text-primary); }
 
-        .meta-info {
-            margin-top: 10px;
-            display: flex; gap: 10px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        .meta-info { margin-top: 10px; display: flex; gap: 10px; font-size: 0.8rem; color: var(--text-muted); }
         .meta-tag { display: flex; align-items: center; gap: 5px; }
 
-        /* 카드 액션 버튼 (삭제/수정) */
-        .card-actions {
-            display: flex; gap: 8px;
-            opacity: 0.5; transition: 0.2s;
-        }
+        .card-actions { display: flex; gap: 8px; opacity: 0.5; transition: 0.2s; }
         .script-card:hover .card-actions { opacity: 1; }
         
         .btn-icon {
@@ -201,9 +217,10 @@
             padding: 8px; border-radius: 50%;
             transition: 0.2s;
         }
-        .btn-icon:hover { background: rgba(255,255,255,0.1); color: white; }
+        .btn-icon:hover { background: rgba(128,128,128,0.15); color: var(--text-primary); }
+        .btn-icon i { pointer-events: none; }
 
-        /* --- 모달 (Dialog) --- */
+        /* --- 모달 --- */
         dialog {
             background: var(--card-bg);
             color: var(--text-primary);
@@ -213,57 +230,37 @@
             width: 450px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(2px); }
-        
+        dialog::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
         dialog h3 { margin-top: 0; font-size: 1.2rem; color: var(--text-secondary); }
         
-        label { display: block; margin-top: 15px; margin-bottom: 5px; font-size: 0.85rem; color: var(--text-muted); }
+        label { display: block; margin-top: 15px; margin-bottom: 5px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
         
         input, select, textarea {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
-            color: white;
+            color: var(--text-primary);
             padding: 12px;
             border-radius: var(--radius-S);
             font-family: inherit;
-            box-sizing: border-box; /* 중요 */
+            box-sizing: border-box;
+            transition: 0.2s;
         }
-        input:focus, textarea:focus { outline: 2px solid #8AB4F8; border-color: transparent; }
+        input:focus, textarea:focus, select:focus { outline: 2px solid var(--text-secondary); border-color: transparent; }
         textarea { resize: vertical; min-height: 80px; }
 
         .modal-btns { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
         .btn-cancel { background: transparent; color: var(--text-muted); border: none; padding: 10px 20px; cursor: pointer; }
-        .btn-confirm { background: var(--text-secondary); color: #131314; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-        /* 아이콘 클릭 방지 (버튼 클릭만 인식되게) */
-        .btn-icon i {
-            pointer-events: none;
-        }
+        .btn-confirm { background: var(--text-secondary); color: #fff; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
         /* 토스트 */
         #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
         .toast {
-            background: #E3E3E3; color: #131314;
+            background: var(--text-primary); color: var(--bg-color); /* 반전 색상 */
             padding: 12px 24px; border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-weight: 500; font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: 600; font-size: 0.9rem;
             animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 8px;
-            border-radius: var(--radius-S);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .tab-btn.active {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            font-weight: bold;
         }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -271,53 +268,67 @@
 </head>
 <body>
 
-<div class="sidebar">
+    <div class="sidebar">
         <div class="brand"><i class="fas fa-sparkles"></i> RenGui</div>
 
-        <div style="display:flex; gap:5px; margin-bottom:20px;">
-            <button class="tab-btn active" onclick="switchTab('action')" style="flex:1; padding:8px; cursor:pointer; background:#4285F4; border:none; border-radius:8px; color:white; font-weight:bold;">🎬 제작</button>
-            <button class="tab-btn" onclick="switchTab('config')" style="flex:1; padding:8px; cursor:pointer; background:#2D2E35; border:1px solid #444; border-radius:8px; color:#aaa;">⚙️ 설정</button>
+        <div style="display:flex; gap:8px; margin-bottom:25px;">
+            <button class="tab-btn active" onclick="switchTab('action')" data-i18n="tab_action">🎬 Action</button>
+            <button class="tab-btn" onclick="switchTab('config')" data-i18n="tab_config">⚙️ Config</button>
         </div>
 
         <div id="tab-action">
-            <div class="menu-title">ACTIONS</div>
+            <div class="menu-title" data-i18n="menu_actions">ACTIONS</div>
             <button class="btn-action" onclick="addCard('dialogue')">
-                <i class="fas fa-comment-dots"></i> <span>대사 추가</span>
+                <i class="fas fa-comment-dots"></i> <span data-i18n="btn_dialogue">Add Dialogue</span>
             </button>
             <button class="btn-action" onclick="addCard('video')">
-                <i class="fas fa-film"></i> <span>영상 연출</span>
+                <i class="fas fa-film"></i> <span data-i18n="btn_video">Add Video</span>
             </button>
             <button class="btn-action" onclick="addCard('branch')">
-                <i class="fas fa-code-branch"></i> <span>분기점</span>
+                <i class="fas fa-code-branch"></i> <span data-i18n="btn_branch">Add Branch</span>
             </button>
         </div>
 
         <div id="tab-config" style="display:none;">
-            <div class="menu-title">SYSTEM</div>
-            <label>게임 제목</label>
+            <div class="menu-title" data-i18n="lbl_title">GAME SETTINGS</div>
+            <label data-i18n="lbl_title">Game Title</label>
             <input type="text" id="conf-title" value="My RenGui Game">
             
             <div style="display:flex; gap:10px;">
-                <div><label>가로</label><input type="number" id="conf-w" value="1280"></div>
-                <div><label>세로</label><input type="number" id="conf-h" value="720"></div>
+                <div><label>Width</label><input type="number" id="conf-w" value="1280"></div>
+                <div><label>Height</label><input type="number" id="conf-h" value="720"></div>
             </div>
 
             <div class="menu-title" style="margin-top:20px;">UI DESIGN</div>
-            <label>대화창 색상 / 투명도</label>
+            <label>Box Color / Opacity</label>
             <div style="display:flex; gap:10px;">
                 <input type="color" id="conf-box-color" value="#000000" style="height:42px; cursor:pointer;">
                 <input type="number" id="conf-box-opacity" value="0.7" step="0.1" min="0" max="1">
             </div>
 
-            <label>텍스트 색상</label>
+            <label>Text Color</label>
             <input type="color" id="conf-text-color" value="#FFFFFF" style="height:42px; cursor:pointer;">
-            
-            <label>대화창 높이 (px)</label>
+            <label>Box Height (px)</label>
             <input type="number" id="conf-box-height" value="200">
+
+            <div class="menu-title" style="margin-top:30px; border-top:1px solid var(--border-color); padding-top:20px;" data-i18n="menu_editor">EDITOR PREFERENCES</div>
+            
+            <label data-i18n="lbl_language">Language</label>
+            <select id="app-lang" onchange="changeLanguage(this.value)" style="margin-bottom:10px;">
+                <option value="en">English</option>
+                <option value="ko">한국어</option>
+            </select>
+
+            <label data-i18n="lbl_theme">Theme</label>
+            <button class="btn-action" onclick="toggleTheme()" style="justify-content:center; text-align:center;">
+                <span id="theme-label">🌙 Dark Mode</span>
+            </button>
         </div>
 
         <div style="flex: 1;"></div>
-        <button class="btn-save" onclick="saveFile()"><i class="fas fa-save"></i> 프로젝트 저장</button>
+        <button class="btn-save" onclick="saveFile()">
+            <i class="fas fa-save"></i> <span data-i18n="btn_save">Save Project</span>
+        </button>
     </div>
 
     <div class="main">
@@ -330,70 +341,57 @@
     </div>
 
     <dialog id="edit-modal">
-        <h3 id="modal-title">✏️ 편집</h3>
+        <h3 id="modal-title">✏️ Edit</h3>
         
         <div id="field-dialogue">
-            <label>화자 (Actor)</label>
-            <input type="text" id="edit-actor" placeholder="이름">
+            <label data-i18n="ph_actor">Actor Name</label>
+            <input type="text" id="edit-actor">
             
-            <label>대사 내용</label>
-            <textarea id="edit-text" placeholder="대사를 입력하세요..."></textarea>
+            <label data-i18n="ph_text">Dialogue</label>
+            <textarea id="edit-text"></textarea>
             
-            <label style="margin-top:15px; color:#A8C7FA;">캐릭터 배치 (Sprites)</label>
+            <label style="margin-top:15px; color:var(--text-secondary);">Character Sprites</label>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <div style="flex:1;">
-                    <span style="font-size:0.7rem; color:#888;">왼쪽 (Left)</span>
-                    <select id="edit-char-left"></select>
-                </div>
-                <div style="flex:1;">
-                    <span style="font-size:0.7rem; color:#888;">중앙 (Center)</span>
-                    <select id="edit-char-center"></select>
-                </div>
-                <div style="flex:1;">
-                    <span style="font-size:0.7rem; color:#888;">오른쪽 (Right)</span>
-                    <select id="edit-char-right"></select>
-                </div>
+                <div style="flex:1;"><span style="font-size:0.7rem; color:var(--text-muted);">Left</span><select id="edit-char-left"></select></div>
+                <div style="flex:1;"><span style="font-size:0.7rem; color:var(--text-muted);">Center</span><select id="edit-char-center"></select></div>
+                <div style="flex:1;"><span style="font-size:0.7rem; color:var(--text-muted);">Right</span><select id="edit-char-right"></select></div>
             </div>
             
-            <label>배경 이미지</label>
+            <label>Background Image</label>
             <select id="edit-bg"></select>
         </div>
 
         <div id="field-video" style="display:none;">
-            <label>재생할 영상 (.ivf)</label>
+            <label>Video File (.ivf)</label>
             <select id="edit-video"></select>
-            <p style="font-size:0.8rem; color:#888; margin-top:5px;">* assets/images 폴더의 .ivf 파일만 표시됩니다.</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">* Only .ivf files in assets/images are shown.</p>
         </div>
 
         <div style="display:flex; gap:10px;">
-            <div style="flex:1;">
-                <label>BGM</label><select id="edit-bgm"></select>
-            </div>
-            <div style="flex:1;">
-                <label>SFX</label><select id="edit-sfx"></select>
-            </div>
+            <div style="flex:1;"><label>BGM</label><select id="edit-bgm"></select></div>
+            <div style="flex:1;"><label>SFX</label><select id="edit-sfx"></select></div>
         </div>
 
-        <label>실행 조건 (Optional)</label>
-        <input type="text" id="edit-cond" placeholder="예: love >= 100">
+        <label>Condition (Optional)</label>
+        <input type="text" id="edit-cond" placeholder="e.g. love >= 100">
 
         <div class="modal-btns">
-            <button class="btn-cancel" onclick="closeModal()">취소</button>
-            <button class="btn-confirm" onclick="confirmEdit()">적용하기</button>
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-confirm" onclick="confirmEdit()">Apply</button>
         </div>
     </dialog>
 
     <dialog id="confirm-modal" style="width: 320px; text-align: center;">
         <h3 style="color:#e74c3c; margin-bottom:10px;">
-            <i class="fas fa-exclamation-triangle"></i> 삭제 확인
+            <i class="fas fa-exclamation-triangle"></i> <span data-i18n="msg_delete_confirm">Delete?</span>
         </h3>
-        <p style="color:#E3E3E3; margin-bottom: 25px; line-height:1.5;">
-            정말 이 카드를 삭제하시겠습니까?<br>
-            <span style="font-size:0.8rem; color:#8E918F;">이 작업은 되돌릴 수 없습니다.</span>
+        <p style="color:var(--text-primary); margin-bottom: 25px; line-height:1.5;">
+            Are you sure you want to delete this?<br>
+            <span style="font-size:0.8rem; color:var(--text-muted);">This action cannot be undone.</span>
         </p>
         <div class="modal-btns" style="justify-content: center;">
-            <button class="btn-cancel" onclick="closeConfirm(false)">취소</button>
-            <button class="btn-confirm" onclick="closeConfirm(true)" style="background:#e74c3c; color:white;">삭제</button>
+            <button class="btn-cancel" onclick="closeConfirm(false)">Cancel</button>
+            <button class="btn-confirm" onclick="closeConfirm(true)" style="background:#e74c3c; color:white;">Delete</button>
         </div>
     </dialog>
 
